@@ -17,9 +17,16 @@ public class StartMainActivity implements View.OnClickListener {
     @Override
     public void onClick(View v) {
         EditText txt = sourceActivity.findViewById(R.id.editText);
+        CheckBox humidity = sourceActivity.findViewById(R.id.humidityCheckBox);
+        CheckBox pressure = sourceActivity.findViewById(R.id.pressureCheckBox);
+        CheckBox windSpeed = sourceActivity.findViewById(R.id.windSpeedCheckBox);
 
         Parcel parcel = new Parcel();
         parcel.city = txt.getText().toString();
+        parcel.humidity = humidity.isChecked();
+        parcel.pressure = pressure.isChecked();
+        parcel.windSpeed = windSpeed.isChecked();
+
 
         Intent intent = new Intent(sourceActivity, MainActivity.class);
         intent.putExtra(TEXT, parcel);
