@@ -3,4 +3,8 @@
     <string name="weather">Погода</string>
     <string name="temperature">Температура</string>
     <string name="humidity">Влажность</string>
+    <string name="city">Город</string>
+    <string name="pressure">Давление</string>
+    <string name="windSpeed">Скорость ветра</string>
+    <string name="getWeather">Узнать погоду</string>
 </resources>

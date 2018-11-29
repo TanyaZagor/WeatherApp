@@ -8,8 +8,6 @@ import android.widget.TextView;
 public class MainActivity extends AppCompatActivity {
     private int temperature;
     private int humidity;
-    private TextView temperatureTextView;
-    private TextView humidityTextView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -20,9 +18,12 @@ public class MainActivity extends AppCompatActivity {
         setTemperature(20);
         setHumidity(50);
 
-        temperatureTextView = findViewById(R.id.temperatureTextView);
-        humidityTextView = findViewById(R.id.humidityTextView);
+        Parcel parcel = (Parcel) getIntent().getExtras().getSerializable(StartMainActivity.TEXT);
+        TextView cityTextView = findViewById(R.id.city);
+        TextView temperatureTextView = findViewById(R.id.temperatureTextView);
+        TextView humidityTextView = findViewById(R.id.humidityTextView);
 
+        cityTextView.setText(parcel.city);
         temperatureTextView.setText(String.valueOf(getTemperature()));
         humidityTextView.setText(String.valueOf(getHumidity()));
     }

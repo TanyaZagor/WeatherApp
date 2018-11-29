@@ -15,13 +15,22 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         android:textSize="40sp"/>
+    <TextView
+        android:id="@+id/city"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/city"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/weather"
+        android:textSize="30sp"/>
 
     <LinearLayout
         android:id="@+id/temperature"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintTop_toBottomOf="@id/weather">
+        app:layout_constraintTop_toBottomOf="@id/city">
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
