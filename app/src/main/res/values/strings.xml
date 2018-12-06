@@ -7,4 +7,14 @@
     <string name="pressure">Давление</string>
     <string name="windSpeed">Скорость ветра</string>
     <string name="getWeather">Узнать погоду</string>
+    <string name="empty">Список город пуст</string>
+
+    <string-array name="Cities">
+        <item>Москва</item>
+        <item>Санкт-Петербург</item>
+        <item>Екатеринбург</item>
+        <item>Новосибирск</item>
+        <item>Самара</item>
+    </string-array>
+
 </resources>

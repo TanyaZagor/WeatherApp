@@ -3,10 +3,19 @@ package com.example.android.weatherapp;
 import java.io.Serializable;
 
 public class Parcel implements Serializable {
+    private final int imageIndex;
+    private final String cityName;
 
-    public String city;
+    public int getImageIndex() {
+        return imageIndex;
+    }
 
-    public boolean humidity;
-    public boolean pressure;
-    public boolean windSpeed;
+    public String getCityName() {
+        return cityName;
+    }
+
+    public Parcel(int imageIndex, String cityName) {
+        this.imageIndex = imageIndex;
+        this.cityName = cityName;
+    }
 }

@@ -14,8 +14,5 @@ public class SelectionActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_selection);
-
-        Button button = findViewById(R.id.button);
-        button.setOnClickListener(new StartMainActivity(this));
     }
 }
