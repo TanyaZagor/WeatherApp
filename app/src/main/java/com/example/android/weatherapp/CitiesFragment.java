@@ -38,7 +38,7 @@ public class CitiesFragment extends ListFragment {
 
         if (savedInstanceState != null) {
 
-            currentParcel = (Parcel) savedInstanceState.getSerializable("CurrentCity");
+            currentParcel = (Parcel) savedInstanceState.getParcelable("CurrentCity");
         }
         else {
             currentParcel = new Parcel(0, getResources().getTextArray(R.array.Cities)[0].toString());
@@ -53,7 +53,7 @@ public class CitiesFragment extends ListFragment {
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putSerializable("CurrentCity", currentParcel);
+        outState.putParcelable("CurrentCity", currentParcel);
     }
 
     @Override

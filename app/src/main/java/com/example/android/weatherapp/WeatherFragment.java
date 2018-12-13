@@ -27,13 +27,13 @@ public class WeatherFragment extends Fragment {
     public static WeatherFragment create(Parcel parcel) {
         WeatherFragment f = new WeatherFragment();
         Bundle args = new Bundle();
-        args.putSerializable(PARCEL, parcel);
+        args.putParcelable(PARCEL, parcel);
         f.setArguments(args);
         return f;
     }
 
     public Parcel getParcel() {
-        Parcel parcel = (Parcel) getArguments().getSerializable(PARCEL);
+        Parcel parcel = (Parcel) getArguments().getParcelable(PARCEL);
         return parcel;
     }
     @TargetApi(Build.VERSION_CODES.M)

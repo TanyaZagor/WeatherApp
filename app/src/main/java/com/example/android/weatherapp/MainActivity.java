@@ -18,8 +18,11 @@ public class MainActivity extends AppCompatActivity {
 
         if (savedInstanceState == null) {
             WeatherFragment details = new WeatherFragment();
-            details.setArguments(getIntent().getExtras());
-            getFragmentManager().beginTransaction().add(android.R.id.content, details).commit();
+            if (getIntent() != null) {
+                details.setArguments(getIntent().getExtras());
+                getFragmentManager().beginTransaction().add(android.R.id.content, details).commit();
+            }
+
         }
     }
 }
