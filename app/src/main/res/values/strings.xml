@@ -8,6 +8,7 @@
     <string name="windSpeed">Скорость ветра</string>
     <string name="getWeather">Узнать погоду</string>
     <string name="empty">Список город пуст</string>
+    <string name="date">Дата</string>
 
     <string-array name="Cities">
         <item>Москва</item>
