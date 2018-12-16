@@ -9,7 +9,6 @@ import android.widget.TextView;
 
 import java.text.DateFormat;
 import java.util.Calendar;
-import java.util.List;
 
 public class WeatherAdapter extends RecyclerView.Adapter<WeatherAdapter.ViewHolder> {
 

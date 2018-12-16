@@ -4,10 +4,10 @@ import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.os.Bundle;
 import android.app.ListFragment;
+import android.support.v7.widget.CardView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -16,6 +16,7 @@ import static com.example.android.weatherapp.WeatherFragment.PARCEL;
 public class CitiesFragment extends ListFragment {
     private boolean isExist;
     private Parcel currentParcel;
+
     @Override
     public View onCreateView(LayoutInflater inflater,
                              ViewGroup container,
@@ -27,9 +28,8 @@ public class CitiesFragment extends ListFragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        ArrayAdapter adapter = ArrayAdapter.createFromResource(getActivity(),
-                R.array.Cities,
-                android.R.layout.simple_list_item_activated_1);
+        CityAdapter adapter = new CityAdapter(getResources());
+
         setListAdapter(adapter);
 
         View detailsFrame = getActivity().findViewById(R.id.weather_details);
@@ -38,7 +38,7 @@ public class CitiesFragment extends ListFragment {
 
         if (savedInstanceState != null) {
 
-            currentParcel = (Parcel) savedInstanceState.getParcelable("CurrentCity");
+            currentParcel = savedInstanceState.getParcelable("CurrentCity");
         }
         else {
             currentParcel = new Parcel(0, getResources().getTextArray(R.array.Cities)[0].toString());
@@ -58,7 +58,8 @@ public class CitiesFragment extends ListFragment {
 
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
-        TextView cityNameView = (TextView) v;
+        CardView cityCardView = (CardView) v;
+        TextView cityNameView = cityCardView.findViewById(R.id.city);
         currentParcel =  new Parcel(position, cityNameView.getText().toString());
         showDetails(currentParcel);
     }
