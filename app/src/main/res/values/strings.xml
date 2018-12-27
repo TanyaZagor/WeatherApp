@@ -14,6 +14,7 @@
     <string name="navigation_drawer_close">close</string>
     <string name="feedback">Форма обратной связи</string>
     <string name="about_developer">О разработчике</string>
+    <string name="now">Сейчас</string>
 
     <string-array name="Cities">
         <item>Москва</item>

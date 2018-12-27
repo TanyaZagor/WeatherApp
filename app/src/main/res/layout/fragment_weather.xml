@@ -7,13 +7,44 @@
     tools:context=".MainActivity">
 
     <TextView
+        android:id="@+id/now"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/now"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="@id/temperatureNow"
+        app:layout_constraintTop_toTopOf="parent"
+        android:textSize="20sp" />
+
+    <TextView
+        android:id="@+id/temperatureNow"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/temperature"
+        app:layout_constraintLeft_toLeftOf="@id/now"
+        app:layout_constraintRight_toRightOf="@id/humidityNow"
+        app:layout_constraintTop_toTopOf="parent"
+        android:textSize="20sp" />
+
+
+    <TextView
+        android:id="@+id/humidityNow"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toLeftOf="@id/temperatureNow"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:text="@string/humidity"
+        android:textSize="20sp"/>
+
+    <TextView
         android:id="@+id/city"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/city"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/now"
         android:textSize="30sp"
         android:layout_margin="10dp"/>
 
