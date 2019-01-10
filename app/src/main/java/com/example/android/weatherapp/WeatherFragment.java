@@ -1,6 +1,10 @@
 package com.example.android.weatherapp;
 
 import android.annotation.TargetApi;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -8,13 +12,17 @@ import android.hardware.SensorManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.app.Fragment;
+import android.support.annotation.RequiresApi;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.text.DateFormat;
 import java.util.Date;
@@ -24,6 +32,8 @@ import static android.content.Context.SENSOR_SERVICE;
 public class WeatherFragment extends Fragment {
 
     public static final String PARCEL = "parcel";
+    public static final String BROADCAST_ACTION = "com.example.android.weatherapp";
+    MyBroadCastReceiver myBroadCastReceiver;
     public String[] weather = {"Небольшой снег", "-1 -5", "700 мм", "3 м/с","80 %"};
 
     private RecyclerView recyclerView;
@@ -33,6 +43,11 @@ public class WeatherFragment extends Fragment {
     private Sensor sensorHumidity;
     private TextView temperatureNow;
     private TextView humidityNow;
+    private TextView weatherView;
+    private TextView temperatureView;
+    private TextView pressureView;
+    private TextView windSpeedView;
+    private TextView humidityView;
 
     public static WeatherFragment create(Parcel parcel) {
         WeatherFragment f = new WeatherFragment();
@@ -53,6 +68,9 @@ public class WeatherFragment extends Fragment {
         View layout = inflater.inflate(R.layout.fragment_weather, container, false);
         Date date = new Date();
 
+        myBroadCastReceiver = new MyBroadCastReceiver();
+        registerMyReceiver();
+
         sensorManager = (SensorManager) getActivity().getSystemService(SENSOR_SERVICE);
 
         sensorTemperature = sensorManager.getDefaultSensor(Sensor.TYPE_AMBIENT_TEMPERATURE);
@@ -66,13 +84,16 @@ public class WeatherFragment extends Fragment {
 
         TextView cityNameView = layout.findViewById(R.id.city);
         TextView dateView = layout.findViewById(R.id.date);
-        TextView weatherView = layout.findViewById(R.id.weather);
-        TextView temperatureView = layout.findViewById(R.id.temperature);
-        TextView pressureView = layout.findViewById(R.id.pressure);
-        TextView windSpeedView = layout.findViewById(R.id.windSpeed);
-        TextView humidityView = layout.findViewById(R.id.humidity);
+        weatherView = layout.findViewById(R.id.weather);
+        temperatureView = layout.findViewById(R.id.temperature);
+        pressureView = layout.findViewById(R.id.pressure);
+        windSpeedView = layout.findViewById(R.id.windSpeed);
+        humidityView = layout.findViewById(R.id.humidity);
 
         Parcel parcel = getParcel();
+
+        getActivity().startService(new Intent(getActivity(), Service.class));
+        myBroadCastReceiver = new MyBroadCastReceiver();
 
         cityNameView.setText(parcel.getCityName());
         dateView.setText(DateFormat.getDateInstance().format(date));
@@ -120,4 +141,36 @@ public class WeatherFragment extends Fragment {
 
         }
     };
+
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    private void registerMyReceiver() {
+
+        try
+        {
+            IntentFilter intentFilter = new IntentFilter();
+            intentFilter.addAction(BROADCAST_ACTION);
+            getContext().registerReceiver(myBroadCastReceiver, intentFilter);
+        }
+        catch (Exception ex)
+        {
+            ex.printStackTrace();
+        }
+
+    }
+
+
+
+    class MyBroadCastReceiver extends BroadcastReceiver {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            weather = intent.getStringArrayExtra("WeatherData");
+            weatherView.setText(weather[0]);
+            temperatureView.setText(weather[1]);
+            pressureView.setText(weather[2]);
+            windSpeedView.setText(weather[3]);
+            humidityView.setText(weather[4]);
+            Log.d("MyLog", "onReceive");
+        }
+    }
 }
