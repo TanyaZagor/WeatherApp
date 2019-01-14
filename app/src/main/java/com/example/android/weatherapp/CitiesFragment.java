@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.app.ListFragment;
 import android.support.v7.widget.CardView;
-import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,21 +32,12 @@ public class CitiesFragment extends ListFragment {
 
         setListAdapter(adapter);
 
-        View detailsFrame = getActivity().findViewById(R.id.weather_details);
-
-        isExist = detailsFrame != null && detailsFrame.getVisibility() == View.VISIBLE;
-
         if (savedInstanceState != null) {
 
             currentParcel = savedInstanceState.getParcelable("CurrentCity");
         }
         else {
             currentParcel = new Parcel(0, getResources().getTextArray(R.array.Cities)[0].toString());
-        }
-
-        if (isExist){
-            getListView().setChoiceMode(ListView.CHOICE_MODE_SINGLE);
-            showDetails(currentParcel);
         }
     }
 
@@ -66,23 +56,9 @@ public class CitiesFragment extends ListFragment {
     }
 
     private void showDetails(Parcel parcel) {
-        if (isExist) {
-            getListView().setItemChecked( parcel.getImageIndex(), true);
-            WeatherFragment detail = (WeatherFragment)
-                    getFragmentManager().findFragmentById(R.id.weather_details);
-            if (detail == null || detail.getParcel().getImageIndex() != parcel.getImageIndex()) {
-                detail = WeatherFragment.create(parcel);
-                FragmentTransaction ft = getFragmentManager().beginTransaction();
-                ft.replace(R.id.weather_details, detail);
-                ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
-                ft.commit();
-            }
-        }
-        else {
-            Intent intent = new Intent();
-            intent.setClass(getActivity(), MainActivity.class);
-            intent.putExtra(PARCEL, parcel);
-            startActivity(intent);
-        }
+        Intent intent = new Intent();
+        intent.setClass(getActivity(), MainActivity.class);
+        intent.putExtra(PARCEL, parcel);
+        startActivity(intent);
     }
 }

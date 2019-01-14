@@ -34,7 +34,8 @@ public class Service extends IntentService {
         }
         catch (Exception ex)
         {
-            ex.printStackTrace();
+            Log.e(TAG, ex.toString());
         }
+
     }
 }

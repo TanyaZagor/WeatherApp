@@ -5,6 +5,9 @@
 
     <group android:checkableBehavior="single">
         <item
+            android:id="@+id/city"
+            android:title="@string/city" />
+        <item
             android:id="@+id/about_developer"
             android:title="@string/about_developer" />
         <item

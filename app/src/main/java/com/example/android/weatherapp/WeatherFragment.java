@@ -20,9 +20,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.text.DateFormat;
 import java.util.Date;
@@ -31,6 +29,7 @@ import static android.content.Context.SENSOR_SERVICE;
 
 public class WeatherFragment extends Fragment {
 
+    private final String TAG = "WeatherFragment";
     public static final String PARCEL = "parcel";
     public static final String BROADCAST_ACTION = "com.example.android.weatherapp";
     MyBroadCastReceiver myBroadCastReceiver;
@@ -71,7 +70,7 @@ public class WeatherFragment extends Fragment {
         myBroadCastReceiver = new MyBroadCastReceiver();
         registerMyReceiver();
 
-        sensorManager = (SensorManager) getActivity().getSystemService(SENSOR_SERVICE);
+        /*sensorManager = (SensorManager) getActivity().getSystemService(SENSOR_SERVICE);
 
         sensorTemperature = sensorManager.getDefaultSensor(Sensor.TYPE_AMBIENT_TEMPERATURE);
         sensorHumidity = sensorManager.getDefaultSensor(Sensor.TYPE_RELATIVE_HUMIDITY);
@@ -80,22 +79,21 @@ public class WeatherFragment extends Fragment {
         sensorManager.registerListener(listenerHum, sensorHumidity, SensorManager.SENSOR_DELAY_NORMAL);
 
         temperatureNow = layout.findViewById(R.id.temperatureNow);
-        humidityNow = layout.findViewById(R.id.humidityNow);
+        humidityNow = layout.findViewById(R.id.humidityNow);*/
 
         TextView cityNameView = layout.findViewById(R.id.city);
         TextView dateView = layout.findViewById(R.id.date);
-        weatherView = layout.findViewById(R.id.weather);
+        weatherView = layout.findViewById(R.id.weather_info);
         temperatureView = layout.findViewById(R.id.temperature);
         pressureView = layout.findViewById(R.id.pressure);
         windSpeedView = layout.findViewById(R.id.windSpeed);
         humidityView = layout.findViewById(R.id.humidity);
 
-        Parcel parcel = getParcel();
 
         getActivity().startService(new Intent(getActivity(), Service.class));
         myBroadCastReceiver = new MyBroadCastReceiver();
 
-        cityNameView.setText(parcel.getCityName());
+        cityNameView.setText("Москва");
         dateView.setText(DateFormat.getDateInstance().format(date));
         weatherView.setText(weather[0]);
         temperatureView.setText(weather[1]);
@@ -116,7 +114,7 @@ public class WeatherFragment extends Fragment {
         return layout;
     }
 
-    private final SensorEventListener listenerTemp = new SensorEventListener() {
+    /*private final SensorEventListener listenerTemp = new SensorEventListener() {
         @Override
         public void onSensorChanged(SensorEvent event) {
             float[] temp = event.values;
@@ -140,7 +138,7 @@ public class WeatherFragment extends Fragment {
         public void onAccuracyChanged(Sensor sensor, int accuracy) {
 
         }
-    };
+    };*/
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     private void registerMyReceiver() {
@@ -153,7 +151,7 @@ public class WeatherFragment extends Fragment {
         }
         catch (Exception ex)
         {
-            ex.printStackTrace();
+            Log.e(TAG, ex.toString());
         }
 
     }
@@ -170,7 +168,7 @@ public class WeatherFragment extends Fragment {
             pressureView.setText(weather[2]);
             windSpeedView.setText(weather[3]);
             humidityView.setText(weather[4]);
-            Log.d("MyLog", "onReceive");
+            Log.d(TAG, "onReceive");
         }
     }
 }
