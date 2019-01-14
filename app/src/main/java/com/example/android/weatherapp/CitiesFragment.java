@@ -2,6 +2,7 @@ package com.example.android.weatherapp;
 
 import android.app.FragmentTransaction;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.app.ListFragment;
 import android.support.v7.widget.CardView;
@@ -11,11 +12,12 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import static com.example.android.weatherapp.WeatherFragment.PARCEL;
+import static android.content.Context.MODE_PRIVATE;
 
 public class CitiesFragment extends ListFragment {
-    private boolean isExist;
-    private Parcel currentParcel;
+    private String preferenceName = "preference";
+    private String city;
+    private SharedPreferences sharedPref;
 
     @Override
     public View onCreateView(LayoutInflater inflater,
@@ -32,33 +34,32 @@ public class CitiesFragment extends ListFragment {
 
         setListAdapter(adapter);
 
-        if (savedInstanceState != null) {
+        sharedPref = getActivity().getSharedPreferences(preferenceName, MODE_PRIVATE);
+    }
 
-            currentParcel = savedInstanceState.getParcelable("CurrentCity");
-        }
-        else {
-            currentParcel = new Parcel(0, getResources().getTextArray(R.array.Cities)[0].toString());
-        }
+    private void savePreferences(SharedPreferences sharedPref) {
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putString("City", city);
+        editor.apply();
     }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putParcelable("CurrentCity", currentParcel);
     }
 
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
         CardView cityCardView = (CardView) v;
         TextView cityNameView = cityCardView.findViewById(R.id.city);
-        currentParcel =  new Parcel(position, cityNameView.getText().toString());
-        showDetails(currentParcel);
+        city = cityNameView.getText().toString();
+        savePreferences(sharedPref);
+        showDetails();
     }
 
-    private void showDetails(Parcel parcel) {
+    private void showDetails() {
         Intent intent = new Intent();
         intent.setClass(getActivity(), MainActivity.class);
-        intent.putExtra(PARCEL, parcel);
         startActivity(intent);
     }
 }

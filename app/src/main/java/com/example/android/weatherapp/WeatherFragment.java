@@ -5,6 +5,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -25,6 +26,7 @@ import android.widget.TextView;
 import java.text.DateFormat;
 import java.util.Date;
 
+import static android.content.Context.MODE_PRIVATE;
 import static android.content.Context.SENSOR_SERVICE;
 
 public class WeatherFragment extends Fragment {
@@ -47,6 +49,9 @@ public class WeatherFragment extends Fragment {
     private TextView pressureView;
     private TextView windSpeedView;
     private TextView humidityView;
+    private TextView cityNameView;
+    private SharedPreferences sharedPref;
+    private String preferenceName = "preference";
 
     public static WeatherFragment create(Parcel parcel) {
         WeatherFragment f = new WeatherFragment();
@@ -70,6 +75,8 @@ public class WeatherFragment extends Fragment {
         myBroadCastReceiver = new MyBroadCastReceiver();
         registerMyReceiver();
 
+
+
         /*sensorManager = (SensorManager) getActivity().getSystemService(SENSOR_SERVICE);
 
         sensorTemperature = sensorManager.getDefaultSensor(Sensor.TYPE_AMBIENT_TEMPERATURE);
@@ -81,7 +88,7 @@ public class WeatherFragment extends Fragment {
         temperatureNow = layout.findViewById(R.id.temperatureNow);
         humidityNow = layout.findViewById(R.id.humidityNow);*/
 
-        TextView cityNameView = layout.findViewById(R.id.city);
+        cityNameView = layout.findViewById(R.id.city);
         TextView dateView = layout.findViewById(R.id.date);
         weatherView = layout.findViewById(R.id.weather_info);
         temperatureView = layout.findViewById(R.id.temperature);
@@ -89,11 +96,13 @@ public class WeatherFragment extends Fragment {
         windSpeedView = layout.findViewById(R.id.windSpeed);
         humidityView = layout.findViewById(R.id.humidity);
 
+        sharedPref = getActivity().getSharedPreferences(preferenceName, MODE_PRIVATE);
+        loadPreferences(sharedPref);
 
         getActivity().startService(new Intent(getActivity(), Service.class));
         myBroadCastReceiver = new MyBroadCastReceiver();
 
-        cityNameView.setText("Москва");
+        //cityNameView.setText("Москва");
         dateView.setText(DateFormat.getDateInstance().format(date));
         weatherView.setText(weather[0]);
         temperatureView.setText(weather[1]);
@@ -112,6 +121,12 @@ public class WeatherFragment extends Fragment {
         recyclerView.setAdapter(adapter);
         adapter.notifyDataSetChanged();
         return layout;
+    }
+
+    private void loadPreferences(SharedPreferences sharedPref) {
+        String value = sharedPref.getString("City", "Москва");
+        cityNameView.setText(value);
+
     }
 
     /*private final SensorEventListener listenerTemp = new SensorEventListener() {
