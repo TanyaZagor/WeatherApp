@@ -39,7 +39,7 @@ public class CitiesFragment extends ListFragment {
 
     private void savePreferences(SharedPreferences sharedPref) {
         SharedPreferences.Editor editor = sharedPref.edit();
-        editor.putString("City", city);
+        editor.putString("City",city);
         editor.apply();
     }
 

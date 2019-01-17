@@ -13,6 +13,7 @@ import android.hardware.SensorManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.app.Fragment;
+import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
@@ -23,8 +24,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.example.android.weatherapp.interfaces.OpenWeather;
+import com.example.android.weatherapp.model.WeatherRequest;
+
 import java.text.DateFormat;
 import java.util.Date;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 import static android.content.Context.MODE_PRIVATE;
 import static android.content.Context.SENSOR_SERVICE;
@@ -35,7 +45,6 @@ public class WeatherFragment extends Fragment {
     public static final String PARCEL = "parcel";
     public static final String BROADCAST_ACTION = "com.example.android.weatherapp";
     MyBroadCastReceiver myBroadCastReceiver;
-    public String[] weather = {"Небольшой снег", "-1 -5", "700 мм", "3 м/с","80 %"};
 
     private RecyclerView recyclerView;
     private WeatherAdapter adapter;
@@ -52,6 +61,9 @@ public class WeatherFragment extends Fragment {
     private TextView cityNameView;
     private SharedPreferences sharedPref;
     private String preferenceName = "preference";
+    private OpenWeather openWeather;
+
+    private static final String API_KEY = "21dd341c1efc49455a1809a49af62a9d";
 
     public static WeatherFragment create(Parcel parcel) {
         WeatherFragment f = new WeatherFragment();
@@ -72,8 +84,8 @@ public class WeatherFragment extends Fragment {
         View layout = inflater.inflate(R.layout.fragment_weather, container, false);
         Date date = new Date();
 
-        myBroadCastReceiver = new MyBroadCastReceiver();
-        registerMyReceiver();
+        //myBroadCastReceiver = new MyBroadCastReceiver();
+        //registerMyReceiver();
 
 
 
@@ -99,16 +111,19 @@ public class WeatherFragment extends Fragment {
         sharedPref = getActivity().getSharedPreferences(preferenceName, MODE_PRIVATE);
         loadPreferences(sharedPref);
 
-        getActivity().startService(new Intent(getActivity(), Service.class));
-        myBroadCastReceiver = new MyBroadCastReceiver();
+        //getActivity().startService(new Intent(getActivity(), Service.class));
+        //myBroadCastReceiver = new MyBroadCastReceiver();
 
         //cityNameView.setText("Москва");
         dateView.setText(DateFormat.getDateInstance().format(date));
-        weatherView.setText(weather[0]);
-        temperatureView.setText(weather[1]);
-        pressureView.setText(weather[2]);
-        windSpeedView.setText(weather[3]);
-        humidityView.setText(weather[4]);
+        weatherView.setText("");
+        temperatureView.setText("");
+        pressureView.setText("");
+        windSpeedView.setText("");
+        humidityView.setText("");
+
+        initRetrofit();
+        requestRetrofit(sharedPref.getString("City", "Moscow,ru"), API_KEY, "metric");
 
         recyclerView = layout.findViewById(R.id.recycler_view);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
@@ -124,7 +139,7 @@ public class WeatherFragment extends Fragment {
     }
 
     private void loadPreferences(SharedPreferences sharedPref) {
-        String value = sharedPref.getString("City", "Москва");
+        String value = sharedPref.getString("City", "Moscow,ru");
         cityNameView.setText(value);
 
     }
@@ -177,7 +192,7 @@ public class WeatherFragment extends Fragment {
 
         @Override
         public void onReceive(Context context, Intent intent) {
-            weather = intent.getStringArrayExtra("WeatherData");
+            String [] weather = intent.getStringArrayExtra("WeatherData");
             weatherView.setText(weather[0]);
             temperatureView.setText(weather[1]);
             pressureView.setText(weather[2]);
@@ -185,5 +200,35 @@ public class WeatherFragment extends Fragment {
             humidityView.setText(weather[4]);
             Log.d(TAG, "onReceive");
         }
+    }
+
+    private void initRetrofit() {
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("http://api.openweathermap.org/")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+        openWeather = retrofit.create(OpenWeather.class);
+    }
+    private void requestRetrofit(String city, String keyApi, String unit) {
+        openWeather.loadWeather(city, keyApi, unit)
+                .enqueue(new Callback<WeatherRequest>() {
+                    @Override
+                    public void onResponse(@NonNull Call<WeatherRequest> call,
+                                           @NonNull Response<WeatherRequest> response) {
+                        if (response.body() != null) {
+                            weatherView.setText(response.body().getWeather()[0].getDescription());
+                            temperatureView.setText(Float.toString(response.body().getMain().getTemp()));
+                            pressureView.setText(Float.toString(response.body().getMain().getPressure()));
+                            humidityView.setText(Float.toString(response.body().getMain().getHumidity()));
+                            windSpeedView.setText(Float.toString(response.body().getWind().getSpeed()));
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(@NonNull Call<WeatherRequest> call,
+                                          @NonNull Throwable throwable) {
+                        Log.e("Retrofit", "request failed", throwable);
+                    }
+                });
     }
 }
