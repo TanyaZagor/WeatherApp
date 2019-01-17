@@ -63,6 +63,8 @@ public class WeatherFragment extends Fragment {
     private String preferenceName = "preference";
     private OpenWeather openWeather;
 
+    private DataBaseHelper dataBase;
+
     private static final String API_KEY = "21dd341c1efc49455a1809a49af62a9d";
 
     public static WeatherFragment create(Parcel parcel) {
@@ -84,6 +86,7 @@ public class WeatherFragment extends Fragment {
         View layout = inflater.inflate(R.layout.fragment_weather, container, false);
         Date date = new Date();
 
+        dataBase = new DataBaseHelper(getActivity());
         //myBroadCastReceiver = new MyBroadCastReceiver();
         //registerMyReceiver();
 
@@ -221,6 +224,16 @@ public class WeatherFragment extends Fragment {
                             pressureView.setText(Float.toString(response.body().getMain().getPressure()));
                             humidityView.setText(Float.toString(response.body().getMain().getHumidity()));
                             windSpeedView.setText(Float.toString(response.body().getWind().getSpeed()));
+
+                            WeatherData weatherData = new WeatherData();
+                            weatherData.setCity(response.body().getName());
+                            weatherData.setWeatherInfo(response.body().getWeather()[0].getDescription());
+                            weatherData.setTemperature(response.body().getMain().getTemp());
+                            weatherData.setPressure(response.body().getMain().getPressure());
+                            weatherData.setHumidity(response.body().getMain().getHumidity());
+                            weatherData.setWindSpeed(response.body().getWind().getSpeed());
+
+                            dataBase.updateData(weatherData);
                         }
                     }
 
