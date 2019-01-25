@@ -138,7 +138,7 @@
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recycler_view"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="250dp"
         android:scrollbars="vertical"
         app:layout_constraintTop_toBottomOf="@+id/humidity"
         app:layout_constraintLeft_toLeftOf="parent"

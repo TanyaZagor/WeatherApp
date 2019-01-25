@@ -8,6 +8,7 @@ public class WeatherData {
     private double pressure;
     private double windSpeed;
     private double humidity;
+    private String date;
 
     public String getCity() {
         return city;
@@ -57,4 +58,11 @@ public class WeatherData {
         this.humidity = humidity;
     }
 
+    public String getDate() {
+        return date;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
+    }
 }

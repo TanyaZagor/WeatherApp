@@ -7,24 +7,28 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import java.text.DateFormat;
-import java.util.Calendar;
-
 public class WeatherAdapter extends RecyclerView.Adapter<WeatherAdapter.ViewHolder> {
 
-    private final Calendar calendar = Calendar.getInstance();
+    private WeatherData[] forecast;
+    private ViewHolder viewHolder;
 
     public class ViewHolder extends RecyclerView.ViewHolder{
 
         private TextView temperature;
         private TextView date;
+        private TextView weatherInfo;
+
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
 
             temperature = itemView.findViewById(R.id.temperature);
             date = itemView.findViewById(R.id.date);
+            weatherInfo = itemView.findViewById(R.id.info);
         }
+    }
+    public WeatherAdapter( WeatherData[] forecast) {
+        this.forecast = forecast;
     }
 
     @NonNull
@@ -32,24 +36,21 @@ public class WeatherAdapter extends RecyclerView.Adapter<WeatherAdapter.ViewHold
     public WeatherAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
         View view = LayoutInflater.from(viewGroup.getContext())
                 .inflate(R.layout.item, viewGroup, false);
-
-        ViewHolder viewHolder = new ViewHolder(view);
-
+        viewHolder = new ViewHolder(view);
         return viewHolder;
     }
 
     @Override
     public void onBindViewHolder(@NonNull WeatherAdapter.ViewHolder viewHolder, int i) {
-
-        calendar.add(Calendar.DATE, +1);
-        viewHolder.temperature.setText("0 -10");
-        viewHolder.date.setText(DateFormat.getDateInstance().format(calendar.getTime()));
+        viewHolder.temperature.setText(String.valueOf((int) forecast[i].getTemperature()));
+        viewHolder.date.setText(forecast[i].getDate());
+        viewHolder.weatherInfo.setText(forecast[i].getWeatherInfo());
 
     }
 
     @Override
     public int getItemCount() {
-        return 1;
+        return forecast.length;
     }
 
 }

@@ -40,6 +40,9 @@ public class WeatherRequest {
     @SerializedName("cod")
     @Expose
     private int cod;
+    @SerializedName("dt_txt")
+    @Expose
+    private String  dt_txt;
 
     public Coord getCoord() {
         return coord;
@@ -135,5 +138,13 @@ public class WeatherRequest {
 
     public void setCod(int cod) {
         this.cod = cod;
+    }
+
+    public String getDt_txt() {
+        return dt_txt;
+    }
+
+    public void setDt_txt(String dt_txt) {
+        this.dt_txt = dt_txt;
     }
 }
