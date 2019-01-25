@@ -17,11 +17,11 @@
     <string name="now">Сейчас</string>
 
     <string-array name="Cities">
-        <item>Москва</item>
-        <item>Санкт-Петербург</item>
-        <item>Екатеринбург</item>
-        <item>Новосибирск</item>
-        <item>Самара</item>
+        <item>Moscow,ru</item>
+        <item>Saint Petersburg,ru</item>
+        <item>Yekaterinburg,ru</item>
+        <item>Novosibirsk,ru</item>
+        <item>Samara,ru</item>
     </string-array>
 
 </resources>

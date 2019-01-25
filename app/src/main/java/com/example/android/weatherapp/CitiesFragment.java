@@ -1,88 +1,71 @@
 package com.example.android.weatherapp;
 
-import android.app.FragmentTransaction;
+import android.app.Fragment;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.app.ListFragment;
-import android.support.v7.widget.CardView;
-import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ListView;
-import android.widget.TextView;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
+import android.widget.Button;
 
-import static com.example.android.weatherapp.WeatherFragment.PARCEL;
+import java.util.List;
 
-public class CitiesFragment extends ListFragment {
-    private boolean isExist;
-    private Parcel currentParcel;
+import static android.content.Context.MODE_PRIVATE;
+
+public class CitiesFragment extends Fragment {
+    private String preferenceName = "preference";
+    private String city;
+    private SharedPreferences sharedPref;
+    private DataBaseHelper db;
 
     @Override
     public View onCreateView(LayoutInflater inflater,
                              ViewGroup container,
                              Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_list, container, false);
+        View layout = inflater.inflate(R.layout.fragment_list, container, false);
+
+        db = new DataBaseHelper(getActivity());
+        List<String> cities = db.getCities();
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(),
+                android.R.layout.simple_dropdown_item_1line, cities);
+        final AutoCompleteTextView textView = layout.findViewById(R.id.city);
+        textView.setAdapter(adapter);
+        Button button = layout.findViewById(R.id.button);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                city = textView.getText().toString();
+                savePreferences(sharedPref);
+                showDetails();
+            }
+        });
+        return layout;
     }
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        CityAdapter adapter = new CityAdapter(getResources());
+        sharedPref = getActivity().getSharedPreferences(preferenceName, MODE_PRIVATE);
+    }
 
-        setListAdapter(adapter);
-
-        View detailsFrame = getActivity().findViewById(R.id.weather_details);
-
-        isExist = detailsFrame != null && detailsFrame.getVisibility() == View.VISIBLE;
-
-        if (savedInstanceState != null) {
-
-            currentParcel = savedInstanceState.getParcelable("CurrentCity");
-        }
-        else {
-            currentParcel = new Parcel(0, getResources().getTextArray(R.array.Cities)[0].toString());
-        }
-
-        if (isExist){
-            getListView().setChoiceMode(ListView.CHOICE_MODE_SINGLE);
-            showDetails(currentParcel);
-        }
+    private void savePreferences(SharedPreferences sharedPref) {
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putString("City",city);
+        editor.apply();
     }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putParcelable("CurrentCity", currentParcel);
     }
 
-    @Override
-    public void onListItemClick(ListView l, View v, int position, long id) {
-        CardView cityCardView = (CardView) v;
-        TextView cityNameView = cityCardView.findViewById(R.id.city);
-        currentParcel =  new Parcel(position, cityNameView.getText().toString());
-        showDetails(currentParcel);
-    }
-
-    private void showDetails(Parcel parcel) {
-        if (isExist) {
-            getListView().setItemChecked( parcel.getImageIndex(), true);
-            WeatherFragment detail = (WeatherFragment)
-                    getFragmentManager().findFragmentById(R.id.weather_details);
-            if (detail == null || detail.getParcel().getImageIndex() != parcel.getImageIndex()) {
-                detail = WeatherFragment.create(parcel);
-                FragmentTransaction ft = getFragmentManager().beginTransaction();
-                ft.replace(R.id.weather_details, detail);
-                ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
-                ft.commit();
-            }
-        }
-        else {
-            Intent intent = new Intent();
-            intent.setClass(getActivity(), MainActivity.class);
-            intent.putExtra(PARCEL, parcel);
-            startActivity(intent);
-        }
+    private void showDetails() {
+        Intent intent = new Intent();
+        intent.setClass(getActivity(), MainActivity.class);
+        startActivity(intent);
     }
 }

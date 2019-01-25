@@ -5,10 +5,12 @@ import android.os.Parcelable;
 public class Parcel implements Parcelable {
     private final int imageIndex;
     private final String cityName;
+    private int temp;
 
     protected Parcel(android.os.Parcel in) {
         imageIndex = in.readInt();
         cityName = in.readString();
+        temp = in.readInt();
     }
 
     public static final Creator<Parcel> CREATOR = new Creator<Parcel>() {

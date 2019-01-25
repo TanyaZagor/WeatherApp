@@ -14,7 +14,8 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="@id/temperatureNow"
         app:layout_constraintTop_toTopOf="parent"
-        android:textSize="20sp" />
+        android:textSize="20sp"
+        android:visibility="gone"/>
 
     <TextView
         android:id="@+id/temperatureNow"
@@ -24,7 +25,8 @@
         app:layout_constraintLeft_toLeftOf="@id/now"
         app:layout_constraintRight_toRightOf="@id/humidityNow"
         app:layout_constraintTop_toTopOf="parent"
-        android:textSize="20sp" />
+        android:textSize="20sp"
+        android:visibility="gone"/>
 
 
     <TextView
@@ -35,7 +37,8 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         android:text="@string/humidity"
-        android:textSize="20sp"/>
+        android:textSize="20sp"
+        android:visibility="gone"/>
 
     <TextView
         android:id="@+id/city"
@@ -69,15 +72,14 @@
         app:layout_constraintRight_toRightOf="parent"
         android:text="@string/temperature"
         android:textSize="60sp"/>
-
     <TextView
-        android:id="@+id/weather"
+        android:id="@+id/weather_info"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/weather"
+        app:layout_constraintTop_toBottomOf="@id/temperature"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/temperature"
+        android:text="@string/weather"
         android:textSize="30sp"
         android:paddingBottom="30dp"/>
 
@@ -88,7 +90,7 @@
         android:src="@drawable/humidity"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toLeftOf="@id/pressureIcon"
-        app:layout_constraintTop_toBottomOf="@id/weather"/>
+        app:layout_constraintTop_toBottomOf="@id/weather_info"/>
     <ImageView
         android:id="@+id/pressureIcon"
         android:layout_width="wrap_content"
@@ -96,7 +98,7 @@
         android:src="@drawable/gauge"
         app:layout_constraintLeft_toRightOf="@id/humidityIcon"
         app:layout_constraintRight_toLeftOf="@id/windSpeedIcon"
-        app:layout_constraintTop_toBottomOf="@id/weather"/>
+        app:layout_constraintTop_toBottomOf="@id/weather_info"/>
     <ImageView
         android:id="@+id/windSpeedIcon"
         android:layout_width="wrap_content"
@@ -104,7 +106,7 @@
         android:src="@drawable/wind"
         app:layout_constraintLeft_toRightOf="@id/pressureIcon"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/weather"
+        app:layout_constraintTop_toBottomOf="@id/weather_info"
         android:visibility="visible"/>
 
     <TextView
@@ -136,9 +138,9 @@
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recycler_view"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="250dp"
         android:scrollbars="vertical"
-        app:layout_constraintTop_toBottomOf="@+id/windSpeed"
+        app:layout_constraintTop_toBottomOf="@+id/humidity"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         android:layout_marginTop="30dp"/>
