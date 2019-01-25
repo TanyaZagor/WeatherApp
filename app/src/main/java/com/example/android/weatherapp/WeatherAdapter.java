@@ -12,7 +12,7 @@ import java.util.Calendar;
 
 public class WeatherAdapter extends RecyclerView.Adapter<WeatherAdapter.ViewHolder> {
 
-    final Calendar calendar = Calendar.getInstance();
+    private final Calendar calendar = Calendar.getInstance();
 
     public class ViewHolder extends RecyclerView.ViewHolder{
 

@@ -1,6 +1,10 @@
 package com.example.android.weatherapp;
 
 import android.annotation.TargetApi;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.app.Fragment;
@@ -15,6 +19,8 @@ import android.widget.TextView;
 import java.text.DateFormat;
 import java.util.Date;
 
+import static android.content.Context.SENSOR_SERVICE;
+
 public class WeatherFragment extends Fragment {
 
     public static final String PARCEL = "parcel";
@@ -22,6 +28,11 @@ public class WeatherFragment extends Fragment {
 
     private RecyclerView recyclerView;
     private WeatherAdapter adapter;
+    private SensorManager sensorManager;
+    private Sensor sensorTemperature;
+    private Sensor sensorHumidity;
+    private TextView temperatureNow;
+    private TextView humidityNow;
 
     public static WeatherFragment create(Parcel parcel) {
         WeatherFragment f = new WeatherFragment();
@@ -42,7 +53,16 @@ public class WeatherFragment extends Fragment {
         View layout = inflater.inflate(R.layout.fragment_weather, container, false);
         Date date = new Date();
 
+        sensorManager = (SensorManager) getActivity().getSystemService(SENSOR_SERVICE);
 
+        sensorTemperature = sensorManager.getDefaultSensor(Sensor.TYPE_AMBIENT_TEMPERATURE);
+        sensorHumidity = sensorManager.getDefaultSensor(Sensor.TYPE_RELATIVE_HUMIDITY);
+
+        sensorManager.registerListener(listenerTemp, sensorTemperature, SensorManager.SENSOR_DELAY_NORMAL);
+        sensorManager.registerListener(listenerHum, sensorHumidity, SensorManager.SENSOR_DELAY_NORMAL);
+
+        temperatureNow = layout.findViewById(R.id.temperatureNow);
+        humidityNow = layout.findViewById(R.id.humidityNow);
 
         TextView cityNameView = layout.findViewById(R.id.city);
         TextView dateView = layout.findViewById(R.id.date);
@@ -74,4 +94,30 @@ public class WeatherFragment extends Fragment {
         adapter.notifyDataSetChanged();
         return layout;
     }
+
+    private final SensorEventListener listenerTemp = new SensorEventListener() {
+        @Override
+        public void onSensorChanged(SensorEvent event) {
+            float[] temp = event.values;
+            temperatureNow.setText(String.format("%,1f \u00B0", temp[0]));
+        }
+
+        @Override
+        public void onAccuracyChanged(Sensor sensor, int accuracy) {
+
+        }
+    };
+
+    private final SensorEventListener listenerHum = new SensorEventListener() {
+        @Override
+        public void onSensorChanged(SensorEvent event) {
+            float[] hum = event.values;
+            humidityNow.setText(String.format("%,1f %", hum[0]));
+        }
+
+        @Override
+        public void onAccuracyChanged(Sensor sensor, int accuracy) {
+
+        }
+    };
 }
