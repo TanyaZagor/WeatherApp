@@ -47,9 +47,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-        if (id == R.id.action_settings) {
+        /*if (id == R.id.action_settings) {
             return true;
-        }
+        }*/
 
         return super.onOptionsItemSelected(item);
     }
@@ -67,11 +67,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         int optionId = R.layout.content_main;
         if (id == R.id.city) {
             optionId = R.layout.activity_selection;
-
-        } else if (id == R.id.about_developer) {
-
-        } else if (id == R.id.feedback) {
-
         }
         ViewGroup parent = findViewById(R.id.content);
         parent.removeAllViews();

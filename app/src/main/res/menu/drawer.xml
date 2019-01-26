@@ -7,12 +7,6 @@
         <item
             android:id="@+id/city"
             android:title="@string/city" />
-        <item
-            android:id="@+id/about_developer"
-            android:title="@string/about_developer" />
-        <item
-            android:id="@+id/feedback"
-            android:title="@string/feedback" />
     </group>
 
 </menu>

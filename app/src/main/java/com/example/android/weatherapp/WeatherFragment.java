@@ -50,6 +50,7 @@ public class WeatherFragment extends Fragment {
     private OpenWeather openWeather;
     private WeatherRequest[] weatherRequests;
     private WeatherData[] forecast = new WeatherData[15];
+    private boolean byCoord;
 
     private DataBaseHelper dataBase;
 
@@ -83,7 +84,12 @@ public class WeatherFragment extends Fragment {
         humidityView.setText("");
 
         initRetrofit();
-        requestRetrofit(sharedPref.getString("City", "Moscow"), API_KEY, "metric");
+        if (byCoord) {
+            requestRetrofitCoord(sharedPref.getFloat("lat", 37.61f), sharedPref.getFloat("lon", 55.75f), API_KEY, "metric");
+        } else {
+            requestRetrofit(sharedPref.getString("City", "Moscow"), API_KEY, "metric");
+        }
+
 
         recyclerView = layout.findViewById(R.id.recycler_view);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
@@ -91,16 +97,13 @@ public class WeatherFragment extends Fragment {
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(layoutManager);
-
-        /*adapter = new WeatherAdapter(getContext(), forecast);
-        recyclerView.setAdapter(adapter);
-        adapter.notifyDataSetChanged();*/
         return layout;
     }
 
     private void loadPreferences(SharedPreferences sharedPref) {
-        String value = sharedPref.getString("City", "Moscow,ru");
-        cityNameView.setText(value);
+        //String value = sharedPref.getString("City", "Moscow,ru");
+        byCoord = sharedPref.getBoolean("ByCoord", false);
+        //cityNameView.setText(value);
 
     }
 
@@ -162,14 +165,74 @@ public class WeatherFragment extends Fragment {
                             adapter = new WeatherAdapter(forecast);
                             recyclerView.setAdapter(adapter);
                             adapter.notifyDataSetChanged();
-                            Log.i("Forecast", "!!!!" + forecast[0].getDate());
                         }
                     }
 
                     @Override
                     public void onFailure(@NonNull Call<ForecastRequest> call,
                                           @NonNull Throwable throwable) {
-                        Log.i("Forecast", "request failed", throwable);
+                        Log.e("Forecast", "request failed", throwable);
+                    }
+                });
+    }
+    private void requestRetrofitCoord( float lat, float lon, String keyApi, String unit) {
+        openWeather.loadWeatherByCoord(lat, lon, keyApi, unit)
+                .enqueue(new Callback<WeatherRequest>() {
+                    @Override
+                    public void onResponse(@NonNull Call<WeatherRequest> call,
+                                           @NonNull Response<WeatherRequest> response) {
+                        if (response.body() != null) {
+                            cityNameView.setText(response.body().getName());
+                            weatherView.setText(response.body().getWeather()[0].getDescription());
+                            temperatureView.setText(Float.toString(response.body().getMain().getTemp()));
+                            pressureView.setText(Float.toString(response.body().getMain().getPressure()));
+                            humidityView.setText(Float.toString(response.body().getMain().getHumidity()));
+                            windSpeedView.setText(Float.toString(response.body().getWind().getSpeed()));
+
+                            WeatherData weatherData = new WeatherData();
+                            weatherData.setCity(response.body().getName());
+                            weatherData.setWeatherInfo(response.body().getWeather()[0].getDescription());
+                            weatherData.setTemperature(response.body().getMain().getTemp());
+                            weatherData.setPressure(response.body().getMain().getPressure());
+                            weatherData.setHumidity(response.body().getMain().getHumidity());
+                            weatherData.setWindSpeed(response.body().getWind().getSpeed());
+
+                            dataBase.updateData(weatherData);
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(@NonNull Call<WeatherRequest> call,
+                                          @NonNull Throwable throwable) {
+                        Log.e("Retrofit", "request failed", throwable);
+                    }
+                });
+        openWeather.loadForecastByCoord(lat, lon, keyApi, unit)
+                .enqueue(new Callback<ForecastRequest>() {
+                    @RequiresApi(api = Build.VERSION_CODES.M)
+                    @Override
+                    public void onResponse(@NonNull Call<ForecastRequest> call,
+                                           @NonNull Response<ForecastRequest> response) {
+
+                        if (response.body() != null) {
+                            for (int i = 0; i < 15; i++) {
+                                WeatherData weatherData = new WeatherData();
+                                weatherData.setTemperature(response.body().getList()[i].getMain().getTemp());
+                                weatherData.setDate(response.body().getList()[i].getDt_txt());
+                                weatherData.setWeatherInfo(response.body().getList()[i].getWeather()[0].getDescription());
+                                forecast[i] = weatherData;
+
+                            }
+                            adapter = new WeatherAdapter(forecast);
+                            recyclerView.setAdapter(adapter);
+                            adapter.notifyDataSetChanged();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(@NonNull Call<ForecastRequest> call,
+                                          @NonNull Throwable throwable) {
+                        Log.e("Forecast", "request failed", throwable);
                     }
                 });
     }

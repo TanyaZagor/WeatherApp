@@ -19,4 +19,15 @@ public interface OpenWeather {
                                        @Query("appid") String keyApi,
                                        @Query("units") String unit);
 
+    @GET("data/2.5/weather")
+    Call<WeatherRequest> loadWeatherByCoord(@Query("lat") float lat,
+                                            @Query("lon") float lon,
+                                            @Query("appid") String keyApi,
+                                            @Query("units") String unit);
+
+    @GET("data/2.5/forecast")
+    Call<ForecastRequest> loadForecastByCoord(@Query("lat") float lat,
+                                              @Query("lon") float lon,
+                                              @Query("appid") String keyApi,
+                                              @Query("units") String unit);
 }
